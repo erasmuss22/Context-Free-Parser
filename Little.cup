@@ -72,13 +72,13 @@ non terminal DeclNode	      decl;
 non terminal VarDeclNode      varDecl;
 non terminal TypeNode	      type;
 non terminal IdNode	      id;
-non terminal DeclListNode     varDeclList;
+non terminal LinkedList       varDeclList;
 non terminal FnDeclNode       fnDecl;
 non terminal FormalsListNode  formals;
 non terminal LinkedList       formalsList;
 //non terminal FormalDeclNode   formalDecl;
 non terminal FnBodyNode       fnBody;
-non terminal StmtListNode     stmtList;
+non terminal LinkedList     stmtList;
 non terminal StmtNode         stmt;
 /*non terminal ExpNode	      exp;
 non terminal AssignNode       assign_exp;
@@ -142,21 +142,21 @@ formals         ::= LPAREN RPAREN
 		;
 
 fnBody          ::= LCURLY varDeclList: v stmtList: s RCURLY
-		{: RESULT = new FnBodyNode(v, s);
+		{: RESULT = new FnBodyNode(new DeclListNode(v),new StmtListNode( s));
 		:}
 		;
 
 varDeclList     ::= /* epsilon */
-		{: RESULT = new DeclListNode(null);
+		{: RESULT = new LinkedList<DeclNode>();
 		:}
 		;
 
 stmtList        ::= stmtList: sl stmt: s
-		{: sl.myStmts.addLast(s);
+		{: sl.addLast(s);
 		   RESULT = sl;
 		:} 
 		| /* epsilon */
-		{: RESULT = new StmtListNode(new LinkedList<StmtNode>());
+		{: RESULT = new LinkedList<StmtNode>();
 		:}
 		;
 

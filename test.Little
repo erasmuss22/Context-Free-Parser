@@ -2,4 +2,6 @@ int x;
 double y;
 void z;
 int fxn(){
+x++;
 }
+
