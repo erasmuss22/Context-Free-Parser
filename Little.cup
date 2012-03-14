@@ -65,28 +65,28 @@ terminal 	        LESSEQ;
 terminal 	        GREATEREQ;
 terminal 	        AMPERSAND;
 
-/* Non-terminals
- *
- * NOTE: You will need to add more nonterminals to this list as you
- *       add productions to the grammar below.
- */
-
+/* Non-terminals */
 non terminal ProgramNode      program;
 non terminal LinkedList	      declList;
 non terminal DeclNode	      decl;
 non terminal VarDeclNode      varDecl;
 non terminal TypeNode	      type;
 non terminal IdNode	      id;
+non terminal DeclListNode     varDeclList;
 non terminal FnDeclNode       fnDecl;
 non terminal FormalsListNode  formals;
 non terminal LinkedList       formalsList;
-non terminal FormalDeclNode   formalDecl;
+//non terminal FormalDeclNode   formalDecl;
 non terminal FnBodyNode       fnBody;
-non terminal LinkedList       varDeclList;
-non terminal LinkedList       stmtList
-non terminal StmtNode         stmt
+non terminal StmtListNode     stmtList;
+non terminal StmtNode         stmt;
+/*non terminal ExpNode	      exp;
+non terminal AssignNode       assign_exp;
+non terminal UnaryExpNode     term;
+non terminal CallStmtNode     fncall;
+non terminal LinkedList       actualList;*/
 
-/* NOTE: Add precedence and associativity declarations here */
+/* Precedences */
 precedence right ASSIGN;
 precedence left OR;
 precedence left AND;
@@ -125,17 +125,9 @@ decl		::= varDecl:v
 		:}
 		;
 
+
 varDecl		::= type: t id: i SEMICOLON
 		{: RESULT = new VarDeclNode(t, i);
-		:}
-		;
-
-varDeclList     ::= varDeclList: vl varDecl: vd
-		{: vl.addLast(vd);
-		   RESULT = vl;
-		:}
-		| /* epsilon */
-		{: RESULT = new LinkedList<VarDeclNode>();
 		:}
 		;
 
@@ -144,25 +136,8 @@ fnDecl		::= type: t id: i formals: fl fnBody: fb
 		:}
 		;
 
-formals		::= LPAREN RPAREN
-		{: RESULT = new FormalsListNode(new LinkedList<FormalDeclNode>());
-		:}
-		| LPAREN formalsList: fl RPAREN
-		{: RESULT = new FormalsListNode(fl);
-		:}
-		;
-
-formalsList	::= formalDecl: fd
-		{: RESULT = fd;
-		:}
-		| formalDecl: fd COMMA formalsList: fl
-		{: fl.addLast(fd);
-		   RESULT = fl;
-		:}
-		;
-
-formalDecl      ::= type: t id: i
-		{: RESULT = new FormalDeclNode(t, i);
+formals         ::= LPAREN RPAREN
+		{: RESULT = new FormalsListNode(null);
 		:}
 		;
 
@@ -171,67 +146,42 @@ fnBody          ::= LCURLY varDeclList: v stmtList: s RCURLY
 		:}
 		;
 
-stmtList        ::= stmtList: sl stmt: s
-		{: sl.addLast(s);
-		   RESULT = sl;
-		:}
-		| /* epsilon */
-		{: RESULT = new LinkedList<StmtNode>();
+varDeclList     ::= /* epsilon */
+		{: RESULT = new DeclListNode(null);
 		:}
 		;
 
-stmt            ::= assign_exp: a SEMICOLON
-		{:
+stmtList        ::= stmtList: sl stmt: s
+		{: sl.myStmts.addLast(s);
+		   RESULT = sl;
+		:} 
+		| /* epsilon */
+		{: RESULT = new StmtListNode(new LinkedList<StmtNode>());
 		:}
-		| PLUSPLUS id: i SEMICOLON
-		{:
+		;
+
+stmt		::= PLUSPLUS id: i SEMICOLON
+		{: RESULT = new PreIncStmtNode(i);
 		:}
 		| MINUSMINUS id: i SEMICOLON
-		{:
+		{: RESULT = new PreDecStmtNode(i);
 		:}
 		| id: i PLUSPLUS SEMICOLON
-		{:
+		{: RESULT = new PostIncStmtNode(i);
 		:}
 		| id: i MINUSMINUS SEMICOLON
-		{:
-		:}
-		| SCANF LPAREN INT_FORMAT COMMA AMPERSAND id: i RPAREN SEMICOLON
-		{:
-		:}
-		| SCANF LPAREN DBL_FORMAT COMMA AMPERSAND id: i RPAREN SEMICOLON
-		{:
-		:}
-		| PRINTF LPAREN INT_FORMAT COMMA exp: e RPAREN SEMICOLON
-		{:
-		:}
-		| PRINTF LPAREN DBL_FORMAT COMMA exp: e RPAREN SEMICOLON
-		{:
-		:}
-		| PRINTF LPAREN STRINGLITERAL RPAREN SEMICOLON
-		{:
-		:}
-		| IF LPAREN exp: e RPAREN LCURLY varDeclList: vl stmtList: sl RCURLY
-		{:
-		:}
-		| IF LPAREN exp: e RPAREN LCURLY varDeclList: vl stmtList: sl RCURLY ELSE LCURLY varDeclList: vl2 stmtList: sl2 RCURLY
-		{:
-		:}
-		| WHILE LPAREN exp: e RPAREN LCURLY varDeclList: vl stmtList: sl RCURLY
-		{:
-		:}
-		| RETURN exp: e SEMICOLON
-		{:
-		:}
-		| RETURN SEMICOLON
-		{:
-		:}
-		| fncall: f SEMICOLON
-		{:
+		{: RESULT = new PostDecStmtNode(i);
 		:}
 		;
 
 type		::= INT
 		{: RESULT = new IntNode();
+		:}
+		| DBL
+		{: RESULT = new DblNode();
+		:}
+		| VOID
+		{: RESULT = new VoidNode();
 		:}
 		;
 

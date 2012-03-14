@@ -149,7 +149,7 @@ class DeclListNode extends ASTnode {
 	} catch (NoSuchElementException ex) {
 	    System.err.println("unexpected NoSuchElementException in DeclListNode.unparse");
 	    System.exit(-1);
-	}
+	} catch (NullPointerException e) {}
     }
 
     // list of kids (DeclNodes)
@@ -163,6 +163,18 @@ class FormalsListNode extends ASTnode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	try {
+	    p.print("(");
+	    for (FormalDeclNode oneDecl : myFormals) {		
+		oneDecl.unparse(p, indent);
+	    }
+	    p.print(")");
+	} catch (NoSuchElementException ex) {
+	    System.err.println("unexpected NoSuchElementException in FormalsListNode.unparse");
+	    System.exit(-1);
+	} catch (NullPointerException e) {
+      	    p.print(")");		
+	}
     }
 
     // list of kids (FormalDeclNodes)
@@ -177,6 +189,15 @@ class FnBodyNode extends ASTnode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	try {
+	    p.print("{");		
+	    myDeclList.unparse(p, indent);
+	    myStmtList.unparse(p, indent);
+	    p.print("}");
+	} catch (NoSuchElementException ex) {
+	    System.err.println("unexpected NoSuchElementException in FnBodyNode.unparse");
+	    System.exit(-1);
+	} catch (NullPointerException e) {}
     }
 
     // 2 kids
@@ -191,6 +212,14 @@ class StmtListNode extends ASTnode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	try {
+	    for (StmtNode oneDecl : myStmts) {		
+		oneDecl.unparse(p, indent);
+	    }
+	} catch (NoSuchElementException ex) {
+	    System.err.println("unexpected NoSuchElementException in FormalsListNode.unparse");
+	    System.exit(-1);
+	} catch (NullPointerException ex) {}
     }
 
     // list of kids (StmtNodes)
@@ -249,6 +278,12 @@ class FnDeclNode extends DeclNode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	doIndent(p, indent);	
+	myType.unparse(p, 0);
+	p.print(" ");
+	myId.unparse(p, 0);
+	myFormalsList.unparse(p, 0);
+	myBody.unparse(p, 0);
     }
 
     // 4 kids
@@ -295,6 +330,7 @@ class DblNode extends TypeNode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	p.print("double");
     }
 }
 
@@ -304,6 +340,7 @@ class VoidNode extends TypeNode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	p.print("void");
     }
 }
 
