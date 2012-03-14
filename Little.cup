@@ -1,0 +1,241 @@
+/**********************************************************************
+ Java CUP specification for a parser for Little programs
+ **********************************************************************/
+
+import java_cup.runtime.*;
+import java.util.*;
+
+/* The code below redefines method syntax_error to give better error messages
+ * than just "Syntax error"
+ */
+parser code {:
+
+public void syntax_error(Symbol currToken) {
+    if (currToken.value == null) {
+       Errors.fatal(0,0, "Syntax error at end of file");
+    }
+    else {
+       Errors.fatal(((TokenVal)currToken.value).linenum,
+	            ((TokenVal)currToken.value).charnum,
+		    "Syntax error");
+    }
+    System.exit(-1);
+}
+
+:};
+
+
+/* Terminals (tokens returned by the scanner) */
+terminal 	        INT;
+terminal 	        VOID;
+terminal 	        DBL;
+terminal 	        IF;
+terminal 	        ELSE;
+terminal 	        WHILE;
+terminal 	        RETURN;
+terminal 	        SCANF;
+terminal 	        PRINTF;
+terminal 	        INT_FORMAT;
+terminal 	        DBL_FORMAT;
+terminal IdTokenVal     ID;
+terminal IntLitTokenVal INTLITERAL;
+terminal DblLitTokenVal DBLLITERAL;
+terminal StrLitTokenVal STRINGLITERAL;
+terminal 	        LCURLY;
+terminal 	        RCURLY;
+terminal 	        LPAREN;
+terminal 	        RPAREN;
+terminal 	        COMMA;
+terminal 	        ASSIGN;
+terminal 	        SEMICOLON;
+terminal 	        PLUS;
+terminal 	        MINUS;
+terminal 	        STAR;
+terminal 	        DIVIDE;
+terminal 	        PLUSPLUS;
+terminal 	        MINUSMINUS;
+terminal 	        NOT;
+terminal 	        AND;
+terminal 	        OR;
+terminal 	        EQUALS;
+terminal 	        NOTEQUALS;
+terminal 	        LESS;
+terminal 	        GREATER;
+terminal 	        LESSEQ;
+terminal 	        GREATEREQ;
+terminal 	        AMPERSAND;
+
+/* Non-terminals
+ *
+ * NOTE: You will need to add more nonterminals to this list as you
+ *       add productions to the grammar below.
+ */
+
+non terminal ProgramNode      program;
+non terminal LinkedList	      declList;
+non terminal DeclNode	      decl;
+non terminal VarDeclNode      varDecl;
+non terminal TypeNode	      type;
+non terminal IdNode	      id;
+non terminal FnDeclNode       fnDecl;
+non terminal FormalsListNode  formals;
+non terminal LinkedList       formalsList;
+non terminal FormalDeclNode   formalDecl;
+non terminal FnBodyNode       fnBody;
+non terminal LinkedList       varDeclList;
+non terminal LinkedList       stmtList
+non terminal StmtNode         stmt
+
+/* NOTE: Add precedence and associativity declarations here */
+precedence right ASSIGN;
+precedence left OR;
+precedence left AND;
+precedence nonassoc LESS, GREATER, LESSEQ, GREATEREQ, EQUALS, NOTEQUALS;
+precedence left PLUS, MINUS;
+precedence left STAR, DIVIDE;
+precedence left NOT, PLUSPLUS, MINUSMINUS;
+
+
+start with program;
+
+/* grammar with actions
+ *
+ * NOTE: add more grammar rules below
+ */
+
+program		::= declList: d
+		{: RESULT = new ProgramNode(new DeclListNode(d));
+		:}
+		;
+
+declList 	::= declList:dl decl:d
+		{: dl.addLast(d);
+		   RESULT = dl;
+		:}
+		| /* epsilon */
+		{: RESULT = new LinkedList<DeclNode>();
+		:}
+		;
+
+decl		::= varDecl:v
+		{: RESULT = v;
+		:}
+		| fnDecl:f
+		{: RESULT = f;
+		:}
+		;
+
+varDecl		::= type: t id: i SEMICOLON
+		{: RESULT = new VarDeclNode(t, i);
+		:}
+		;
+
+varDeclList     ::= varDeclList: vl varDecl: vd
+		{: vl.addLast(vd);
+		   RESULT = vl;
+		:}
+		| /* epsilon */
+		{: RESULT = new LinkedList<VarDeclNode>();
+		:}
+		;
+
+fnDecl		::= type: t id: i formals: fl fnBody: fb
+		{: RESULT = new FnDeclNode(t, i, fl, fb);
+		:}
+		;
+
+formals		::= LPAREN RPAREN
+		{: RESULT = new FormalsListNode(new LinkedList<FormalDeclNode>());
+		:}
+		| LPAREN formalsList: fl RPAREN
+		{: RESULT = new FormalsListNode(fl);
+		:}
+		;
+
+formalsList	::= formalDecl: fd
+		{: RESULT = fd;
+		:}
+		| formalDecl: fd COMMA formalsList: fl
+		{: fl.addLast(fd);
+		   RESULT = fl;
+		:}
+		;
+
+formalDecl      ::= type: t id: i
+		{: RESULT = new FormalDeclNode(t, i);
+		:}
+		;
+
+fnBody          ::= LCURLY varDeclList: v stmtList: s RCURLY
+		{: RESULT = new FnBodyNode(v, s);
+		:}
+		;
+
+stmtList        ::= stmtList: sl stmt: s
+		{: sl.addLast(s);
+		   RESULT = sl;
+		:}
+		| /* epsilon */
+		{: RESULT = new LinkedList<StmtNode>();
+		:}
+		;
+
+stmt            ::= assign_exp: a SEMICOLON
+		{:
+		:}
+		| PLUSPLUS id: i SEMICOLON
+		{:
+		:}
+		| MINUSMINUS id: i SEMICOLON
+		{:
+		:}
+		| id: i PLUSPLUS SEMICOLON
+		{:
+		:}
+		| id: i MINUSMINUS SEMICOLON
+		{:
+		:}
+		| SCANF LPAREN INT_FORMAT COMMA AMPERSAND id: i RPAREN SEMICOLON
+		{:
+		:}
+		| SCANF LPAREN DBL_FORMAT COMMA AMPERSAND id: i RPAREN SEMICOLON
+		{:
+		:}
+		| PRINTF LPAREN INT_FORMAT COMMA exp: e RPAREN SEMICOLON
+		{:
+		:}
+		| PRINTF LPAREN DBL_FORMAT COMMA exp: e RPAREN SEMICOLON
+		{:
+		:}
+		| PRINTF LPAREN STRINGLITERAL RPAREN SEMICOLON
+		{:
+		:}
+		| IF LPAREN exp: e RPAREN LCURLY varDeclList: vl stmtList: sl RCURLY
+		{:
+		:}
+		| IF LPAREN exp: e RPAREN LCURLY varDeclList: vl stmtList: sl RCURLY ELSE LCURLY varDeclList: vl2 stmtList: sl2 RCURLY
+		{:
+		:}
+		| WHILE LPAREN exp: e RPAREN LCURLY varDeclList: vl stmtList: sl RCURLY
+		{:
+		:}
+		| RETURN exp: e SEMICOLON
+		{:
+		:}
+		| RETURN SEMICOLON
+		{:
+		:}
+		| fncall: f SEMICOLON
+		{:
+		:}
+		;
+
+type		::= INT
+		{: RESULT = new IntNode();
+		:}
+		;
+
+id              ::= ID:i
+		{: RESULT = new IdNode(i.linenum, i.charnum, i.idVal);
+		:}
+		;
