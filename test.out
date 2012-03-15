@@ -1,9 +1,72 @@
 int x;
-double y;
-void z;
-int fxn(int x, double y) {
-  y--;
-  x++;
-  --z;
+double n;
+int y;
+int z;
+int testAll(int w, int z) {
   ++w;
+  --w;
+  w++;
+  w--;
+  scanf("%d", &w);
+  scanf("%f", &z);
+  printf("%d", (3 + 3));
+  printf("%f", (4.0 * 12.2));
+  printf("hello world");
+ if ((w == z)) {
+ }
+ if ((w != z)) {
+    w = (w / z);
+;
+ }
+else {
+  if ((w == 0)) {
+      w = (w * z);
+;
+  }
+ }
+ while ((x == y)) {
+  int w;
+    w = 3;
+;
+ }
+  w = ((3 + ((4 * 5) / 8)) - 7);
+;
+  w = (!w);
+;
+  x = (w && z);
+;
+  z = (x || y);
+;
+  z = (w || (z && x));
+;
+  z = ((w || z) && x);
+;
+ if ((x < y)) {
+  if ((x > z)) {
+   if ((x <= w)) {
+        x = w;
+;
+    if ((z >= n)) {
+          z = fxn(a);
+;
+          z = fxn();
+;
+          y = w;
+;
+          x = 4;
+;
+          y = 5.23;
+;
+          s = "hello";
+;
+    }
+   }
+  }
+ }
+ return x;
+ return y;
+ fxn();
+ fxn2(x, y);
+}
+void change() {
 }

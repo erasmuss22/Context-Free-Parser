@@ -1,10 +1,59 @@
-int x;
-double y;
-void z;
-int fxn(int x, double y){
-y--;
-x++;
---z;
-++w;
-}
 
+/* this is a comment */
+int x;				/* decl -> varDecl */
+double n;
+int y; int z;
+int testAll(int w, int z) {    /* decl -> fnDecl */
+ ++w;			       /* fnBody -> stmtList -> stmt */
+ --w;
+ w++;
+ w--;
+ scanf("%d", &w);
+ scanf("%f", &z);
+ printf("%d", 3 + 3);
+ printf("%f", 4.0 * 12.2);
+ printf("hello world");
+ if (w == z) {
+   
+ }
+ if (w != z) {
+   w = w / z;
+ }
+ else {                        /* nested conditionals, part of stmt */
+   if (w == 0){
+    w = w * z;
+   }
+ }
+ while (x == y) {
+  int w;
+  w = 3;
+}
+w = 3 + 4 * 5 / 8 - 7;        /* stmt -> assign_exp -> muliple exp */
+w = !w;
+x = w && z;
+z = x || y;
+z = w || z && x;
+z = (w || z) && x;
+if (x < y) {                 /* more nested conditionals also does */
+ if (x > z) {		     /* test of more exp */
+   if (x <= w){
+     x = w;
+     if (z >= n) {
+       z = fxn(a);          /* function call with args */
+       z = fxn();           /* function all w/o args */
+       y = (w);
+       x = 4;
+       y = 5.23;
+       s = "hello";
+     }
+   }
+ }
+}
+return x;
+return y;
+fxn();
+fxn2(x, y);
+}
+void change(){		   /* function with no body statements */
+
+}
