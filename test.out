@@ -1,6 +1,9 @@
 int x;
 double y;
 void z;
-int fxn() {
+int fxn(int x, double y) {
+  y--;
   x++;
+  --z;
+  ++w;
 }

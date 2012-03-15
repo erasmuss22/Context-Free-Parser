@@ -163,9 +163,14 @@ class FormalsListNode extends ASTnode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+	int count = 0;
 	try {
 	    for (FormalDeclNode oneDecl : myFormals) {		
 		oneDecl.unparse(p, indent);
+		if (count != myFormals.size() - 1){
+		   p.print(", ");
+		}
+		count++;
 	    }
 	} catch (NoSuchElementException ex) {
 	    System.err.println("unexpected NoSuchElementException in FormalsListNode.unparse");
