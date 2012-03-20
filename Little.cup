@@ -276,7 +276,7 @@ exp		::= assign_exp: a
 		{: RESULT = new GreaterEqNode(e1, e2);
 		:}
 		| MINUS term: t
-		{: new UnaryMinusNode(t);
+		{: RESULT = new UnaryMinusNode(t);
 		:}
 		| term: t
 		{: RESULT = t;

@@ -392,7 +392,6 @@ class AssignStmtNode extends StmtNode {
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
 	myExp.unparseNoParens(p, 0);
-	p.println(";");
     }
 
     // 1 kid

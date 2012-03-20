@@ -16,52 +16,39 @@ int testAll(int w, int z) {
  }
  if ((w != z)) {
     w = (w / z);
-;
  }
 else {
   if ((w == 0)) {
       w = (w * z);
-;
   }
  }
  while ((x == y)) {
   int w;
     w = 3;
-;
  }
   w = ((3 + ((4 * 5) / 8)) - 7);
-;
   w = (!w);
-;
   x = (w && z);
-;
   z = (x || y);
-;
   z = (w || (z && x));
-;
   z = ((w || z) && x);
-;
  if ((x < y)) {
   if ((x > z)) {
    if ((x <= w)) {
         x = w;
-;
     if ((z >= n)) {
           z = fxn(a);
-;
           z = fxn();
-;
           y = w;
-;
           x = 4;
-;
           y = 5.23;
-;
           s = "hello";
-;
     }
    }
   }
+ }
+ if ((b == (-1))) {
+    c = (-1);
  }
  return x;
  return y;

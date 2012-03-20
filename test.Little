@@ -49,6 +49,9 @@ if (x < y) {                 /* more nested conditionals also does */
    }
  }
 }
+if (b == -1){
+  c = -1;
+}
 return x;
 return y;
 fxn();
